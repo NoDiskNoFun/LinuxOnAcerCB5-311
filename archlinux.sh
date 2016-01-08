@@ -181,14 +181,24 @@ ln -s -f /run/resolvconf/resolv.conf /tmp/arfs/etc/resolv.conf
 echo alarm > /tmp/arfs/etc/hostname
 echo -e "\n127.0.1.1\tlocalhost.localdomain\tlocalhost\talarm" >> /tmp/arfs/etc/hosts
 
-KERN_VER=`uname -r`
-mkdir -p /tmp/arfs/lib/modules/$KERN_VER/
-cp -ar /lib/modules/$KERN_VER/* /tmp/arfs/lib/modules/$KERN_VER/
+#TODO: mainline should have all the modules
+#KERN_VER=`uname -r`
+#mkdir -p /tmp/arfs/lib/modules/$KERN_VER/
+#cp -ar /lib/modules/$KERN_VER/* /tmp/arfs/lib/modules/$KERN_VER/
+
 if [ ! -d /tmp/arfs/lib/firmware/ ]
 then
   mkdir /tmp/arfs/lib/firmware/
 fi
 cp -ar /lib/firmware/* /tmp/arfs/lib/firmware/
+
+cat > /tmp/arfs/install-kernel.sh <<EOF
+pacman -Syy --needed --noconfirm linux-armv7-rc-chromebook
+EOF
+
+chmod a+x /tmp/arfs/install-kernel.sh
+chroot /tmp/arfs /bin/bash -c /install-kernel.sh
+rm /tmp/arfs/install-kernel.sh
 
 #
 # Add some development tools and put the alarm user into the
@@ -265,36 +275,10 @@ chmod a+x /tmp/arfs/install-utils.sh
 chroot /tmp/arfs /bin/bash -c /install-utils.sh
 rm /tmp/arfs/install-utils.sh
 
-#
-# Install (latest) proprietary NVIDIA Tegra124 drivers
-#
-# Since the required package is not available through the official
-# repositories (yet), we download the src package from my private
-# homepage and create the pacakge via makepkg ourself.
-#
-
-cat > /tmp/arfs/install-tegra.sh <<EOF
-cd /tmp
-sudo -u nobody -H wget http://www.tbi.univie.ac.at/~ronny/gpu-nvidia-tegra-k1-R21.4.0-2.src.tar.gz
-sudo -u nobody -H tar xzf gpu-nvidia-tegra-k1-R21.4.0-2.src.tar.gz
-cd gpu-nvidia-tegra-k1
-sudo -u nobody -H makepkg
-yes | pacman --needed -U gpu-nvidia-tegra-k1-R21.4.0-2-armv7h.pkg.tar.xz
-cd ..
-rm -rf gpu-nvidia-tegra-k1 gpu-nvidia-tegra-k1-R21.4.0-2.src.tar.gz
-
-usermod -aG video alarm
-EOF
-
-chmod a+x /tmp/arfs/install-tegra.sh
-chroot /tmp/arfs /bin/bash -c /install-tegra.sh
-rm /tmp/arfs/install-tegra.sh
-
-cp /etc/X11/xorg.conf.d/tegra.conf /tmp/arfs/usr/share/X11/xorg.conf.d/
-
 # hack for removing uap0 device on startup (avoid freeze)
 echo 'install mwifiex_sdio /sbin/modprobe --ignore-install mwifiex_sdio && sleep 1 && iw dev uap0 del' > /tmp/arfs/etc/modprobe.d/mwifiex.conf 
 
+#TODO: test whether this works with nouveau
 cat >/tmp/arfs/etc/udev/rules.d/99-tegra-lid-switch.rules <<EOF
 ACTION=="remove", GOTO="tegra_lid_switch_end"
 
