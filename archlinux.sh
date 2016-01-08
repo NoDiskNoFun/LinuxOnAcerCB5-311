@@ -192,8 +192,10 @@ then
 fi
 cp -ar /lib/firmware/* /tmp/arfs/lib/firmware/
 
+#Use -Sdd because for some reason the rc kernel and rc chromebook thingy don't go well together
 cat > /tmp/arfs/install-kernel.sh <<EOF
-pacman -Syy --needed --noconfirm linux-armv7-rc-chromebook
+pacman -Syydd --needed --noconfirm linux-armv7-rc linux-armv7-rc-chromebook
+dd if=/boot/vmlinux.kpart of=/dev/${target_kern}
 EOF
 
 chmod a+x /tmp/arfs/install-kernel.sh
