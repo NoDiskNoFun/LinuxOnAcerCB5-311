@@ -193,8 +193,10 @@ fi
 cp -ar /lib/firmware/* /tmp/arfs/lib/firmware/
 
 cat > /tmp/arfs/install-kernel.sh <<EOF
-pacman -Syy --needed --noconfirm linux-armv7 linux-armv7-chromebook
-dd if=/boot/vmlinux.kpart of=/dev/${target_kern}
+pacman -U --noconfirm \
+http://haagch.frickel.club/files/linux-armv7-4.4.0-4-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/linux-armv7-chromebook-4.4.0-4-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/linux-armv7-headers-4.4.0-4-armv7h.pkg.tar.gz 
 echo elan_i2c > /etc/modules-load.d/elan_touchpad.conf
 echo bq24735_charger > /etc/modules-load.d/bq2473_charger.conf
 EOF
@@ -219,16 +221,28 @@ chroot /tmp/arfs /bin/bash -c /install-develbase.sh
 rm /tmp/arfs/install-develbase.sh
 
 cat > /tmp/arfs/install-xbase.sh <<EOF
-pacman -Syy --needed --noconfirm \
+pacman -S --needed --noconfirm \
         iw networkmanager network-manager-applet \
-        lightdm lightdm-gtk-greeter \
-        chromium chromium-pepper-flash \
+#        lightdm lightdm-gtk-greeter \
+        gdm \
+#        chromium chromium-pepper-flash \
         xorg-server xorg-server-utils xorg-apps xf86-input-synaptics \
         xorg-twm xorg-xclock xterm xorg-xinit xorg-utils \
         alsa-lib alsa-utils alsa-tools alsa-oss alsa-firmware alsa-plugins \
         pulseaudio pulseaudio-alsa
+pacman -U --noconfirm \
+http://haagch.frickel.club/files/upower-0.99.3-2-armv7h.pkg.tar.xz \
+http://haagch.frickel.club/files/xorg-server-common-git-.r14951.-1-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/xorg-server-devel-git-.r14951.-1-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/xorg-server-git-.r14951.-1-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/xorg-server-xdmx-git-.r14951.-1-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/xorg-server-xephyr-git-.r14951.-1-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/xorg-server-xnest-git-.r14951.-1-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/xorg-server-xvfb-git-.r14951.-1-armv7h.pkg.tar.gz \
+http://haagch.frickel.club/files/xorg-server-xwayland-git-.r14951.-1-armv7h.pkg.tar.gz \
 systemctl enable NetworkManager
-systemctl enable lightdm
+#systemctl enable lightdm
+systemctl enable gdm
 EOF
 
 chmod a+x /tmp/arfs/install-xbase.sh
@@ -250,18 +264,18 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
   unset f
 fi
 
-# exec gnome-session
+exec gnome-session
 # exec startkde
-exec startxfce4
+#exec startxfce4
 # ...or the Window Manager of your choice
 EOF
 
 cat > /tmp/arfs/install-xfce4.sh <<EOF
-pacman -Syy --needed --noconfirm  xfce4 xfce4-goodies
+pacman -S --needed --noconfirm  gnome
 # copy .xinitrc to already existing home of user 'alarm'
 cp /etc/skel/.xinitrc /home/alarm/.xinitrc
 cp /etc/skel/.xinitrc /home/alarm/.xprofile
-sed -i 's/exec startxfce4/# exec startxfce4/' /home/alarm/.xprofile
+sed -i 's/exec gnome-session/# exec gnome-session/' /home/alarm/.xprofile
 chown alarm:users /home/alarm/.xinitrc
 chown alarm:users /home/alarm/.xprofile
 EOF
@@ -271,7 +285,7 @@ chroot /tmp/arfs /bin/bash -c /install-xfce4.sh
 rm /tmp/arfs/install-xfce4.sh
 
 cat > /tmp/arfs/install-utils.sh <<EOF
-pacman -Syy --needed --noconfirm  sshfs screen file-roller
+pacman -S --needed --noconfirm  sshfs screen file-roller
 EOF
 
 chmod a+x /tmp/arfs/install-utils.sh
@@ -1982,20 +1996,23 @@ state.Venice2 {
 EOF
 
 
-echo "console=tty1 debug verbose root=${target_rootfs} rootwait rw lsm.module_locking=0" > kernel-config
-vbutil_arch="arm"
+#echo "console=tty1 debug verbose root=${target_rootfs} rootwait rw lsm.module_locking=0" > kernel-config
+#vbutil_arch="arm"
+#
+#current_rootfs="`rootdev -s`"
+#current_kernfs_num=$((${current_rootfs: -1:1}-1))
+#current_kernfs=${current_rootfs: 0:-1}$current_kernfs_num
+#
+#vbutil_kernel --repack ${target_kern} \
+#    --oldblob $current_kernfs \
+#    --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
+#    --version 1 \
+#    --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
+#    --config kernel-config \
+#    --arch $vbutil_arch
+#
 
-current_rootfs="`rootdev -s`"
-current_kernfs_num=$((${current_rootfs: -1:1}-1))
-current_kernfs=${current_rootfs: 0:-1}$current_kernfs_num
-
-vbutil_kernel --repack ${target_kern} \
-    --oldblob $current_kernfs \
-    --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
-    --version 1 \
-    --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
-    --config kernel-config \
-    --arch $vbutil_arch
+dd if=/boot/vmlinux.kpart of=${target_kern}
 
 #Set Ubuntu kernel partition as top priority for next boot (and next boot only)
 cgpt add -i 6 -P 5 -T 1 ${target_disk}
