@@ -293,6 +293,8 @@ LABEL="tegra_lid_switch_end"
 EOF
 
 # alsa mixer settings to enable internal speakers
+mkdir -p /tmp/arfs/var/lib/alsa/
+touch /tmp/arfs/var/lib/alsa/asound.state
 cat > /tmp/arfs/var/lib/alsa/asound.state <<EOF
 state.HDATegra {
 	control.1 {
