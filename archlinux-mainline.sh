@@ -33,13 +33,13 @@ if [ "$3" != "" ]; then
 
   ext_size="`blockdev --getsz ${target_disk}`"
   aroot_size=$((ext_size - 65600 - 33))
- # parted --script ${target_disk} "mktable gpt"
+  #parted --script ${target_disk} "mktable gpt"
   cgpt create ${target_disk} 
   cgpt add -i 6 -b 64 -s 32768 -S 1 -P 5 -l KERN-A -t "kernel" ${target_disk}
   cgpt add -i 7 -b 65600 -s $aroot_size -l ROOT-A -t "rootfs" ${target_disk}
   sync
   blockdev --rereadpt ${target_disk}
- # partprobe ${target_disk}
+  #partprobe ${target_disk}
   crossystem dev_boot_usb=1
 else
   target_disk="`rootdev -d -s`"
@@ -130,14 +130,19 @@ then
 fi
 
 cd /mnt/stateful_partition/archlinux
-
 if [[ "${target_disk}" =~ "mmcblk" ]]
 then
-  target_rootfs="${target_disk}p7"
-  target_kern="${target_disk}p6"
+    if [[ "${target_disk}" =~ "mmcblk0" ]]
+    then
+      target_rootfs="${target_disk}p7"
+      target_kern="${target_disk}p6"
+    else
+      target_rootfs="${target_disk}p7"
+      target_kern="${target_disk}p6"
+    fi
 else
-  target_rootfs="${target_disk}7"
-  target_kern="${target_disk}6"
+  target_rootfs="${target_disk}2"
+  target_kern="${target_disk}1"
 fi
 
 echo "Target Kernel Partition: $target_kern  Target Root FS: ${target_rootfs}"
@@ -193,7 +198,7 @@ fi
 cp -ar /lib/firmware/* /tmp/arfs/lib/firmware/
 
 cat > /tmp/arfs/install-kernel.sh <<EOF
-pacman -Syy --needed --noconfirm linux-armv7 linux-armv7-chromebook
+pacman -Syy --needed linux-armv7-rc linux-armv7-rc-chromebook                         ## Kernel Version anpassen
 dd if=/boot/vmlinux.kpart of=${target_kern}
 echo elan_i2c > /etc/modules-load.d/elan_touchpad.conf
 echo bq24735_charger > /etc/modules-load.d/bq2473_charger.conf
@@ -209,7 +214,7 @@ rm /tmp/arfs/install-kernel.sh
 # that belong to the wheel group
 #
 cat > /tmp/arfs/install-develbase.sh <<EOF
-pacman -Syy --needed --noconfirm sudo wget dialog base-devel devtools vim rsync git
+pacman -Syy --needed --noconfirm sudo wget zip unzip nano dialog base-devel devtools vim rsync git
 usermod -aG wheel alarm
 sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 EOF
@@ -219,18 +224,27 @@ chroot /tmp/arfs /bin/bash -c /install-develbase.sh
 rm /tmp/arfs/install-develbase.sh
 
 cat > /tmp/arfs/install-xbase.sh <<EOF
+
+pacman -Syy --noconfirm pixman libx11 mesa mesa-libgl xf86driproto xcmiscproto xtrans bigreqsproto randrproto inputproto fontsproto videoproto presentproto compositeproto recordproto scrnsaverproto resourceproto xineramaproto libxkbfile libxfont renderproto libpciaccess libxv xf86dgaproto libxmu libxrender libxi dmxproto libxaw libdmx libxtst libxres xorg-xkbcomp xorg-util-macros xorg-font-util glproto dri2proto libepoxy xcb-util xcb-util-image xcb-util-renderutil xcb-util-wm xcb-util-keysyms dri3proto libxshmfence libunwind
+
+sudo su -c " cd /home/alarm &&\
+wget "https://www.dropbox.com/s/vlspq0e4uw434ib/xorg.zip?dl=1" -O xorg-xserver.zip && \
+unzip xorg-xserver.zip && \
+makepkg --skippgpcheck" -s /bin/sh alarm
+pacman -U --noconfirm /home/alarm/xorg-server*.pkg.tar.xz
+
+
+
+
+
 pacman -S --needed --noconfirm \
         iw networkmanager network-manager-applet \
         lightdm lightdm-gtk-greeter \
-#        gdm \
-        epiphany \
-        xorg-server xorg-server-utils xorg-apps xf86-input-synaptics \
-        xorg-twm xorg-xclock xterm xorg-xinit xorg-utils \
+        epiphany mesa-libgl \
         alsa-lib alsa-utils alsa-tools alsa-oss alsa-firmware alsa-plugins \
         pulseaudio pulseaudio-alsa
 systemctl enable NetworkManager
 systemctl enable lightdm
-#systemctl enable gdm
 EOF
 
 chmod a+x /tmp/arfs/install-xbase.sh
@@ -2002,7 +2016,7 @@ EOF
 #    --arch $vbutil_arch
 #
 
-dd if=/boot/vmlinux.kpart of=${target_kern}
+#dd if=/boot/vmlinux.kpart of=${target_kern}
 
 #Set Ubuntu kernel partition as top priority for next boot (and next boot only)
 cgpt add -i 6 -P 5 -T 1 ${target_disk}
