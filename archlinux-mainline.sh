@@ -232,6 +232,7 @@ wget "https://www.dropbox.com/s/vlspq0e4uw434ib/xorg.zip?dl=1" -O xorg-xserver.z
 unzip xorg-xserver.zip && \
 makepkg --skippgpcheck" -s /bin/sh alarm
 pacman -U --noconfirm /home/alarm/xorg-server*.pkg.tar.xz
+libtool --finish /usr/lib/xorg/modules
 
 
 
