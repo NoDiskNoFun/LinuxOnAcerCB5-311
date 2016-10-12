@@ -223,6 +223,8 @@ chmod a+x /tmp/arfs/install-develbase.sh
 chroot /tmp/arfs /bin/bash -c /install-develbase.sh
 rm /tmp/arfs/install-develbase.sh
 
+
+# Install Xorg Package from Tincman with Tegra K1 Hack v. 1.18.3
 cat > /tmp/arfs/install-xbase.sh <<EOF
 
 pacman -Syy --noconfirm pixman libx11 mesa mesa-libgl xf86driproto xcmiscproto xtrans bigreqsproto randrproto inputproto fontsproto videoproto presentproto compositeproto recordproto scrnsaverproto resourceproto xineramaproto libxkbfile libxfont renderproto libpciaccess libxv xf86dgaproto libxmu libxrender libxi dmxproto libxaw libdmx libxtst libxres xorg-xkbcomp xorg-util-macros xorg-font-util glproto dri2proto libepoxy xcb-util xcb-util-image xcb-util-renderutil xcb-util-wm xcb-util-keysyms dri3proto libxshmfence libunwind
