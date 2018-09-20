@@ -228,6 +228,10 @@ cat > ${MY_CHROOT_DIR}/etc/rc.local << EOF
 echo noop > /sys/block/mmcblk0/queue/scheduler&
 echo 08 > /sys/kernel/debug/dri/128/pstate&
 echo 08 > /sys/kernel/debug/dri/129/pstate&
+swapon /swapfile&
+echo 1 > /sys/module/zswap/parameters/enabled&
+echo lz4 > /sys/module/zswap/parameters/compressor&
+sysctl vm.swappiness=10&
 exit 0
 
 EOF
@@ -1926,6 +1930,18 @@ state.GoogleNyanBig {
 
 EOF
 
+# Config Swap 
+
+cat > ${MY_CHROOT_DIR}/swap.sh << EOF
+
+dd if=/dev/zero of=/swapfile bs=1M count=1024
+mkswap /swapfile
+
+EOF
+
+exec_in_chroot swap.sh
+
+
 # Config Tap 2 Click
 
 cat > ${MY_CHROOT_DIR}/etc/X11/xorg.conf.d/50-synaptics.conf << EOF
@@ -2239,4 +2255,4 @@ We're now ready to start ArchLinuxARM!
 
 read -p "Press [Enter] to reboot..."
 
-rebootIgnorePkg   = linux-armv7 linux-armv7-chromebook linux-armv7-headers
+reboot
