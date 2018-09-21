@@ -198,11 +198,13 @@ start_progress "Doing some last few scratches"
 
 cd /home/alarm
 sudo -u alarm git clone https://aur.archlinux.org/rc-local.git
-cd rc.local
+cd rc-local
 sudo -u alarm makepkg -As
-pacman -U --noconfirm --needed rc.local*
+pacman -U --noconfirm --needed rc-local-*
 cd ..
-rm -R rc.local
+rm -R rc-local
+touch /etc/rc.local
+chmod +x /etc/rc.local
 
 EOF
 
