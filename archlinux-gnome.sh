@@ -201,6 +201,7 @@ sudo -u alarm git clone https://aur.archlinux.org/rc-local.git
 cd rc-local
 sudo -u alarm makepkg -As
 pacman -U --noconfirm --needed rc-local-*
+systemctl enable rc-local
 cd ..
 rm -R rc-local
 touch /etc/rc.local
