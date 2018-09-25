@@ -108,7 +108,7 @@ start_progress "Installing development base packages"
 # that belong to the wheel group
 #
 cat > ${MY_CHROOT_DIR}/install-develbase.sh << EOF
-pacman-ky --init
+pacman-key --init
 pacman-key --populate
 pacman -Syyu --needed --noconfirm sudo wget dialog base-devel devtools vim rsync git vboot-utils
 usermod -aG wheel alarm
