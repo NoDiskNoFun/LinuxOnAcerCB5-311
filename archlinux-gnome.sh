@@ -190,6 +190,40 @@ end_progress
 
 function last_few_scratches () {
 
+# Workaround for gnome lockscreen
+
+cat > ${MY_CHROOT_DIR}/home/alarm/.config/autostart/gnome-lockscreen.desktop << EOF
+
+[Desktop Entry]
+Type=Application
+Name=Gnome-Screensaver
+Exec=/usr/bin/gnome-screensaver
+
+
+EOF
+
+
+# Config new reboot behaviour
+
+cat > ${MY_CHROOT_DIR}/usr/lib/systemd/system/cgpt.service << EOF
+
+[Unit]
+Description=Let Chromebook reboot to Linux
+DefaultDependencies=no
+Before=shutdown.target reboot.target halt.target
+
+
+[Service]
+User=root
+Group=root
+ExecStart=cgpt add -i 6 -P 5 -T 3 /dev/mmcblk0
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target
+
+EOF
+
 cat > ${MY_CHROOT_DIR}/scratch-it.sh << EOF
 
 start_progress "Doing some last few scratches"
@@ -206,10 +240,13 @@ cd ..
 rm -R rc-local
 touch /etc/rc.local
 chmod +x /etc/rc.local
+systemctl enable cgpt.service
 
 EOF
 
 exec_in_chroot scratch-it.sh
+
+
 
 # Config tweaks at start-up
 
@@ -228,13 +265,13 @@ cat > ${MY_CHROOT_DIR}/etc/rc.local << EOF
 #
 # By default this script does nothing.
 
-echo noop > /sys/block/mmcblk0/queue/scheduler&
-echo 08 > /sys/kernel/debug/dri/128/pstate&
+echo noop > /sys/block/mmcblk0/queue/scheduler& # Set noop I/O for emmc
+echo 08 > /sys/kernel/debug/dri/128/pstate&     # higher gpu speed
 echo 08 > /sys/kernel/debug/dri/129/pstate&
-swapon /swapfile&
-echo 1 > /sys/module/zswap/parameters/enabled&
-echo lz4 > /sys/module/zswap/parameters/compressor&
-sysctl vm.swappiness=10&
+swapon /swapfile&                                # enable swap
+echo 1 > /sys/module/zswap/parameters/enabled&  # enalbe zswap
+echo lz4 > /sys/module/zswap/parameters/compressor& # use lz4 for zswap
+sysctl vm.swappiness=10& # avoid using emmc for swapping
 exit 0
 
 EOF
@@ -2233,17 +2270,22 @@ last_few_scratches
 #tweak_misc_stuff
 
 #Set ArchLinuxARM kernel partition as top priority for next boot (and next boot only)
-cgpt add -i ${kern_part} -P 5 -T 1 ${target_disk}
+cgpt add -i ${kern_part} -P 5 -T 3 ${target_disk}
 
 echo -e "
 
-Installation seems to be complete. If ArchLinux fails when you reboot,
-power off your Chrome OS device and then turn it back on. You'll be back
-in Chrome OS. If you're happy with ArchLinuxARM when you reboot be sure to run:
+Installation seems to be complete. 
 
-sudo cgpt add -i ${kern_part} -P 5 -S 1 ${target_disk}
+Systemd will automatically reset bootloader to boot ArchLinuxArm 
+three times on normal shutdown or restart. 
+If ArchLinuxArm fails to boot just reboot three times and it will boot
+Chrome OS again.
 
-To make it the default boot option. The ArchLinuxARM login is:
+To disable this behaviour just run
+
+sudo systemd disable cgpt.service
+
+The ArchLinuxARM login is:
 
 Username:  alarm
 Password:  alarm
