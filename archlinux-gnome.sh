@@ -171,7 +171,7 @@ exec gnome-session
 # ...or the Window Manager of your choice
 EOF
 
-cat > ${MY_CHROOT_DIR}/install-gnome.sh << EOF
+cat > ${MY_CHROOT_DIR}/install-gnome.sh <<EOF
 
 pacman -Syy --needed --noconfirm  gnome
 # copy .xinitrc to already existing home of user 'alarm'
@@ -191,8 +191,8 @@ end_progress
 function last_few_scratches () {
 
 # Workaround for gnome lockscreen
-
-cat > ${MY_CHROOT_DIR}/home/alarm/.config/autostart/gnome-lockscreen.desktop << EOF
+touch ${MY_CHROOT_DIR}/home/alarm/.config/autostart/gnome-lockscreen.desktop
+cat > ${MY_CHROOT_DIR}/home/alarm/.config/autostart/gnome-lockscreen.desktop <<EOF
 
 [Desktop Entry]
 Type=Application
@@ -204,8 +204,8 @@ EOF
 
 
 # Config new reboot behaviour
-
-cat > ${MY_CHROOT_DIR}/usr/lib/systemd/system/cgpt.service << EOF
+touch ${MY_CHROOT_DIR}/usr/lib/systemd/system/cgpt.service
+cat > ${MY_CHROOT_DIR}/usr/lib/systemd/system/cgpt.service <<EOF
 
 [Unit]
 Description=Let Chromebook reboot to Linux
@@ -224,11 +224,16 @@ WantedBy=multi-user.target
 
 EOF
 
-cat > ${MY_CHROOT_DIR}/scratch-it.sh << EOF
 
-start_progress "Doing some last few scratches"
+
 
 # Install rc.local
+start_progress "Doing some last few scratches"
+
+touch ${MY_CHROOT_DIR}/scratch-it.sh
+cat > ${MY_CHROOT_DIR}/scratch-it.sh <<EOF
+
+
 
 cd /home/alarm
 sudo -u alarm git clone https://aur.archlinux.org/rc-local.git
@@ -249,8 +254,8 @@ exec_in_chroot scratch-it.sh
 
 
 # Config tweaks at start-up
-
-cat > ${MY_CHROOT_DIR}/etc/rc.local << EOF
+touch ${MY_CHROOT_DIR}/etc/rc.local
+cat > ${MY_CHROOT_DIR}/etc/rc.local <<EOF
 
 #!/bin/sh -e
 #
@@ -277,8 +282,8 @@ exit 0
 EOF
 
 # Config Audio Device
-
-cat > ${MY_CHROOT_DIR}/var/lib/alsa/asound.state << EOF
+touch ${MY_CHROOT_DIR}/var/lib/alsa/asound.state
+cat > ${MY_CHROOT_DIR}/var/lib/alsa/asound.state <<EOF
 
 state.tegrahda {
 	control.1 {
@@ -1972,7 +1977,7 @@ EOF
 
 # Config Swap 
 
-cat > ${MY_CHROOT_DIR}/swap.sh << EOF
+cat > ${MY_CHROOT_DIR}/swap.sh <<EOF
 
 dd if=/dev/zero of=/swapfile bs=1M count=1024
 mkswap /swapfile
@@ -1984,7 +1989,7 @@ exec_in_chroot swap.sh
 
 # Config Tap 2 Click
 
-cat > ${MY_CHROOT_DIR}/etc/X11/xorg.conf.d/50-synaptics.conf << EOF
+cat > ${MY_CHROOT_DIR}/etc/X11/xorg.conf.d/50-synaptics.conf <<EOF
 
 Section "InputClass"
         Identifier "touchpad catchall"
@@ -2005,7 +2010,7 @@ function install_kernel () {
 
 start_progress "Installing kernel"
 
-cat > ${MY_CHROOT_DIR}/install-kernel.sh << EOF
+cat > ${MY_CHROOT_DIR}/install-kernel.sh <<EOF
 
 wget https://github.com/reey/PKGBUILDs/releases/download/v4.18.9.1/linux-armv7-4.18.9-1-armv7h.pkg.tar.xz
 wget https://github.com/reey/PKGBUILDs/releases/download/v4.18.9.1/linux-armv7-chromebook-4.18.9-1-armv7h.pkg.tar.xz
@@ -2029,8 +2034,10 @@ rm /tmp/arfs/install-kernel.sh
 function tweak_misc_stuff () {
 
 # hack for removing uap0 device on startup (avoid freeze)
+touch ${MY_CHROOT_DIR}/etc/modprobe.d/mwifiex.conf
 echo 'install mwifiex_sdio /sbin/modprobe --ignore-install mwifiex_sdio && sleep 1 && iw dev uap0 del' > ${MY_CHROOT_DIR}/etc/modprobe.d/mwifiex.conf
 
+touch ${MY_CHROOT_DIR}/etc/udev/rules.d/99-tegra-lid-switch.rules
 cat > ${MY_CHROOT_DIR}/etc/udev/rules.d/99-tegra-lid-switch.rules <<EOF
 ACTION=="remove", GOTO="tegra_lid_switch_end"
 
