@@ -2004,7 +2004,7 @@ Section "InputClass"
 EndSection
 
 EOF
-
+end_progress
 }
 
 # Install mainline kernel version 4.18.9.1 without LPAE by reey 
