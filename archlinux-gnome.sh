@@ -191,7 +191,10 @@ end_progress
 function last_few_scratches () {
 
 # Workaround for gnome lockscreen
+mkdir -p ${MY_CHROOT_DIR}/home/alarm/.config/
+mkdir -p ${MY_CHROOT_DIR}/home/alarm/.config/autostart
 touch ${MY_CHROOT_DIR}/home/alarm/.config/autostart/gnome-lockscreen.desktop
+
 cat > ${MY_CHROOT_DIR}/home/alarm/.config/autostart/gnome-lockscreen.desktop <<EOF
 
 [Desktop Entry]
