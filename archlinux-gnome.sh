@@ -189,6 +189,7 @@ end_progress
 }
 
 function last_few_scratches () {
+start_progress "Doing some last few scratches"
 
 # Workaround for gnome lockscreen
 mkdir -p ${MY_CHROOT_DIR}/home/alarm/.config/
@@ -231,7 +232,6 @@ EOF
 
 
 # Install rc.local
-start_progress "Doing some last few scratches"
 
 touch ${MY_CHROOT_DIR}/scratch-it.sh
 cat > ${MY_CHROOT_DIR}/scratch-it.sh <<EOF
@@ -2011,7 +2011,7 @@ EOF
 
 function install_kernel () {
 
-start_progress "Installing kernel"
+#start_progress "Installing kernel"
 
 cat > ${MY_CHROOT_DIR}/install-kernel.sh <<EOF
 
