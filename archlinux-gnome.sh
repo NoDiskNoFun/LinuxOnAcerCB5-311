@@ -1979,13 +1979,13 @@ state.GoogleNyanBig {
 EOF
 
 # Config Swap 
+# (That bricks half of the System, do that afterwards and it will work fine)
+#cat > ${MY_CHROOT_DIR}/swap.sh <<EOF
 
-cat > ${MY_CHROOT_DIR}/swap.sh <<EOF
+#dd if=/dev/zero of=/swapfile bs=1M count=1024
+#mkswap /swapfile
 
-dd if=/dev/zero of=/swapfile bs=1M count=1024
-mkswap /swapfile
-
-EOF
+#EOF
 
 exec_in_chroot swap.sh
 
