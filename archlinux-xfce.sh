@@ -2065,6 +2065,27 @@ end_progress
 
 }
 
+function set_password () {
+
+cat > &{MY_CHROOT_DIR}/set_password.sh <<EOF
+
+echo "Set Password for user alarm"
+echo "Current password should be 'alarm'"
+echo ""
+passwd alarm
+echo ""
+echo ""
+echo "Set Password for user root"
+echo "Current password should be 'root'"
+echo ""
+passwd root
+
+EOF
+
+exec_in_chroot set_password.sh
+
+}
+
 echo "" > $LOGFILE
 
 # fw_type will always be developer for Mario.
@@ -2265,6 +2286,8 @@ last_few_scratches
 
 #tweak_misc_stuff
 
+set_password
+
 #Set ArchLinuxARM kernel partition as top priority for next boot (and next boot only)
 cgpt add -i ${kern_part} -P 5 -T 3 ${target_disk}
 
@@ -2280,16 +2303,6 @@ Chrome OS again.
 To disable this behaviour just run
 
 sudo systemd disable cgpt.service
-
-The ArchLinuxARM login is:
-
-Username:  alarm
-Password:  alarm
-
-Root access can either be gained via sudo, or the root user:
-
-Username:  root
-Password:  root
 
 We're now ready to start ArchLinuxARM!
 "
