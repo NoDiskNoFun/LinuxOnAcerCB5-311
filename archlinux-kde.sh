@@ -127,7 +127,7 @@ cat > ${MY_CHROOT_DIR}/install-xbase.sh <<EOF
 
 pacman -Syy --needed --noconfirm \
         iw networkmanager network-manager-applet \
-        lightdm lightdm-gtk-greeter \
+        sddm \
         chromium \
         xorg-server xorg-apps xf86-input-synaptics \
         xorg-twm xorg-xclock xterm xorg-xinit \
