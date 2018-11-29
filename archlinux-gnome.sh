@@ -1987,7 +1987,7 @@ EOF
 
 #EOF
 
-exec_in_chroot swap.sh
+#exec_in_chroot swap.sh
 
 
 # Config Tap 2 Click
