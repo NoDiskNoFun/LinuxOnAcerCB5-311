@@ -2109,10 +2109,14 @@ fi
 #setterm -blank 0
 
 echo ""
-echo "WARNING! This script will install binary packages from an unofficial source!"
+echo "This Script is based on Chrubuntu and was modified by RaumZeit"
+echo "to install Alarm instead of Ubuntu"
+echo "Reey did some changes which let your System be open-Source"
+echo "Praise them for there Effort!!!"
 echo ""
-echo "If you don't trust me (Ronny Lorenz a.k.a. RaumZeit) press CTRL+C to quit"
-echo "(see https://github.com/RaumZeit/LinuxOnAcerCB5-311 for further details)"
+echo "Some tweaks are did by me NoDiskNoFun"
+echo "It will install Arch Linux for ARM, Nouveau Graphics driver,"
+echo "Gnome 3, Chromium Webbrowser, and a set of standard Tools"
 echo ""
 read -p "Press [Enter] to proceed installation of ArchLinuxARM"
 
