@@ -149,7 +149,7 @@ function install_xfce () {
 
 start_progress "Installing XFCE"
 
-# add .xinitrc to /etc/skel that defaults to gnome session
+# add .xinitrc to /etc/skel that defaults to xfce session
 cat > ${MY_CHROOT_DIR}/etc/skel/.xinitrc << EOF
 #!/bin/sh
 #
@@ -176,7 +176,6 @@ pacman -Syy --needed --noconfirm  xfce4
 # copy .xinitrc to already existing home of user 'alarm'
 cp /etc/skel/.xinitrc /home/alarm/.xinitrc
 cp /etc/skel/.xinitrc /home/alarm/.xprofile
-sed -i 's/exec gnome-session/# exec gnome-session/' /home/alarm/.xprofile
 chown alarm:users /home/alarm/.xinitrc
 chown alarm:users /home/alarm/.xprofile
 EOF
