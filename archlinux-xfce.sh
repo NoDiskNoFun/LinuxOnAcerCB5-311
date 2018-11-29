@@ -190,21 +190,6 @@ end_progress
 function last_few_scratches () {
 start_progress "Doing some last few scratches"
 
-# Workaround for gnome lockscreen
-mkdir -p ${MY_CHROOT_DIR}/home/alarm/.config/
-mkdir -p ${MY_CHROOT_DIR}/home/alarm/.config/autostart
-touch ${MY_CHROOT_DIR}/home/alarm/.config/autostart/gnome-lockscreen.desktop
-
-cat > ${MY_CHROOT_DIR}/home/alarm/.config/autostart/gnome-lockscreen.desktop <<EOF
-
-[Desktop Entry]
-Type=Application
-Name=Gnome-Screensaver
-Exec=/usr/bin/gnome-screensaver
-
-
-EOF
-
 
 # Config new reboot behaviour
 touch ${MY_CHROOT_DIR}/usr/lib/systemd/system/cgpt.service
@@ -2108,7 +2093,7 @@ fi
 #setterm -blank 0
 
 echo ""
-echo "This Script is based on Chrubuntu and was modified by RaumZeit"
+echo "This Script is based on Chrubuntu by Clifford Wolf and was modified by RaumZeit"
 echo "to install Alarm instead of Ubuntu"
 echo "Reey did some changes which let your System be open-Source"
 echo "Praise them for there Effort!!!"
@@ -2270,7 +2255,7 @@ install_dev_tools
 
 install_xbase
 
-install_xfce4
+install_xfce
 
 install_sound
 
