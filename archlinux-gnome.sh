@@ -2108,7 +2108,7 @@ fi
 #setterm -blank 0
 
 echo ""
-echo "This Script is based on Chrubuntu and was modified by RaumZeit"
+echo "This Script is based on Chrubuntu by Clifford Wolf and was modified by RaumZeit"
 echo "to install Alarm instead of Ubuntu"
 echo "Reey did some changes which let your System be open-Source"
 echo "Praise them for there Effort!!!"
