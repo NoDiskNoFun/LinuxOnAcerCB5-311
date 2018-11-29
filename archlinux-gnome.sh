@@ -1,7 +1,6 @@
 set -e
 
 CWD=`pwd`
-MY_REPO_PATH="http://www.tbi.univie.ac.at/~ronny/alarm/"
 MY_CHROOT_DIR=/tmp/arfs
 PROGRESS_PID=
 LOGFILE="${CWD}/archlinux-install.log"
