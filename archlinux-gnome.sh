@@ -109,7 +109,7 @@ start_progress "Installing development base packages"
 cat > ${MY_CHROOT_DIR}/install-develbase.sh << EOF
 pacman-key --init
 pacman-key --populate
-pacman -Syyu --needed --noconfirm sudo wget dialog base-devel devtools vim rsync git vboot-utils
+pacman -Syyu --needed --noconfirm sudo wget dialog base-devel devtools vim rsync git vboot-utils ecryptfs-utils 
 usermod -aG wheel alarm
 sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
 EOF
