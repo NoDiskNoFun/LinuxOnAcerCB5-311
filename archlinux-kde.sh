@@ -172,7 +172,7 @@ EOF
 
 cat > ${MY_CHROOT_DIR}/install-kde.sh <<EOF
 
-pacman -Syy --needed --noconfirm  plasma
+pacman -Syy --needed --noconfirm  plasma breeze-gtk
 # copy .xinitrc to already existing home of user 'alarm'
 cp /etc/skel/.xinitrc /home/alarm/.xinitrc
 cp /etc/skel/.xinitrc /home/alarm/.xprofile
