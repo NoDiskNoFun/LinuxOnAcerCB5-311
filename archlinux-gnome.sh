@@ -272,7 +272,6 @@ cat > ${MY_CHROOT_DIR}/etc/rc.local <<EOF
 #
 # By default this script does nothing.
 
-echo noop > /sys/block/mmcblk0/queue/scheduler& # Set noop I/O for emmc
 echo 08 > /sys/kernel/debug/dri/128/pstate&     # higher gpu speed
 echo 08 > /sys/kernel/debug/dri/129/pstate&
 swapon /swapfile&                                # enable swap
