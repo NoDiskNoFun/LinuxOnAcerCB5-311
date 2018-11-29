@@ -2007,7 +2007,7 @@ EOF
 end_progress
 }
 
-# Install mainline kernel version 4.18.9.1 without LPAE by reey 
+# Install mainline kernel version 4.19.0 without LPAE by reey 
 
 function install_kernel () {
 
@@ -2015,9 +2015,9 @@ function install_kernel () {
 
 cat > ${MY_CHROOT_DIR}/install-kernel.sh <<EOF
 
-wget https://github.com/reey/PKGBUILDs/releases/download/v4.18.9.1/linux-armv7-4.18.9-1-armv7h.pkg.tar.xz
-wget https://github.com/reey/PKGBUILDs/releases/download/v4.18.9.1/linux-armv7-chromebook-4.18.9-1-armv7h.pkg.tar.xz
-wget https://github.com/reey/PKGBUILDs/releases/download/v4.18.9.1/linux-armv7-headers-4.18.9-1-armv7h.pkg.tar.xz
+wget https://github.com/reey/PKGBUILDs/releases/download/v4.19.0/linux-armv7-4.19.0-1-armv7h.pkg.tar.xz
+wget https://github.com/reey/PKGBUILDs/releases/download/v4.19.0/linux-armv7-chromebook-4.19.0-1-armv7h.pkg.tar.xz
+wget https://github.com/reey/PKGBUILDs/releases/download/v4.19.0/linux-armv7-headers-4.19.0-1-armv7h.pkg.tar.xz
 pacman -U --needed --noconfirm linux-*
 rm linux-armv7*
 dd if=/boot/vmlinux.kpart of=${target_kern}
