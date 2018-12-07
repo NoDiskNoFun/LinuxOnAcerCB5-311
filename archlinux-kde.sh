@@ -135,7 +135,7 @@ pacman -Syy --needed --noconfirm \
         xf86-input-mouse xf86-input-keyboard \
         xf86-input-evdev xf86-input-synaptics xf86-video-fbdev
 systemctl enable NetworkManager
-systemctl enable lightdm
+systemctl enable sddm
 EOF
 
 exec_in_chroot install-xbase.sh
