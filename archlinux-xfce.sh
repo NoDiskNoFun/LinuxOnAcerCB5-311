@@ -2067,7 +2067,7 @@ end_progress
 
 function set_password () {
 
-cat > &{MY_CHROOT_DIR}/set_password.sh <<EOF
+cat > ${MY_CHROOT_DIR}/set_password.sh <<EOF
 
 echo "Set Password for user alarm"
 echo "Current password should be 'alarm'"
