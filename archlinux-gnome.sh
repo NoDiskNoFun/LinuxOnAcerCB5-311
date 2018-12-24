@@ -258,7 +258,6 @@ exec_in_chroot scratch-it.sh
 # Config tweaks at start-up
 touch ${MY_CHROOT_DIR}/etc/rc.local
 cat > ${MY_CHROOT_DIR}/etc/rc.local <<EOF
-
 #!/bin/sh -e
 #
 # rc.local
