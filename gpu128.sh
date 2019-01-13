@@ -13,6 +13,9 @@ fi
 if [ "$speed" = "2218500" ]; then
     echo 0d > /sys/kernel/debug/dri/128/pstate
 fi
+if [ "$speed" = "2116500" ]; then
+    echo 0c > /sys/kernel/debug/dri/129/pstate
+fi
 if [ "$speed" = "2014500" ]; then
     echo 0c > /sys/kernel/debug/dri/128/pstate
 fi
