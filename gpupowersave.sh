@@ -85,5 +85,5 @@ if [ "$speed" = "204000" ]; then
     echo 01 > /sys/kernel/debug/dri/129/pstate
     echo 01 > /sys/kernel/debug/dri/128/pstate
 fi
-sleep 1
+sleep 0.1
 done
